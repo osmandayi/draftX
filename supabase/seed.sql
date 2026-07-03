@@ -1,0 +1,9 @@
+-- Optional local seed. Player pools require real auth users (captains), so
+-- seeding a full draft isn't meaningful without signed-in users. Use this file
+-- for any static reference data you add later.
+--
+-- To try the app end-to-end:
+--   1. Sign in with Google (creates an auth user + profile via trigger).
+--   2. Create a draft, open the invite link in a second browser/profile.
+--   3. Sign in as a second Google user and join.
+--   4. Add 12 players, start, and draft.
