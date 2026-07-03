@@ -29,37 +29,33 @@ export default async function LandingPage() {
 
   return (
     <main className="flex flex-1 flex-col">
-      {/* Hero — branding + auth, filling the first screen */}
-      <section className="relative flex min-h-svh flex-col">
+      {/* Hero — branding above the auth card, centered and stacked */}
+      <section className="relative flex flex-1 flex-col items-center justify-center gap-8 px-5 py-14 text-center">
         <PitchBackground />
 
-        <div className="relative flex flex-1 flex-col lg:flex-row">
-          <div className="flex flex-col justify-center gap-5 px-6 pt-12 pb-6 text-center lg:flex-1 lg:px-14 lg:text-left">
-            <span className="mx-auto inline-flex w-fit items-center gap-2 rounded-full border border-border/70 bg-card px-3 py-1 text-xs font-medium text-muted-foreground lg:mx-0">
-              <Trophy className="size-3.5 text-primary" />
-              Live captain drafts
-            </span>
+        <div className="flex flex-col items-center gap-5">
+          <span className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
+            <Trophy className="size-3.5 text-primary" />
+            Live captain drafts
+          </span>
 
-            <h1 className="text-balance text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-              Draft your football squad,{" "}
-              <span className="text-primary">live and head-to-head.</span>
-            </h1>
+          <h1 className="max-w-2xl text-balance text-4xl font-bold tracking-tight sm:text-5xl">
+            Draft your football squad,{" "}
+            <span className="text-primary">live and head-to-head.</span>
+          </h1>
 
-            <p className="mx-auto max-w-md text-pretty text-sm text-muted-foreground sm:text-base lg:mx-0">
-              Invite a rival captain and take turns picking a 7-a-side squad. An
-              adjustable shot clock keeps it moving — both squads fill up in
-              real time.
-            </p>
-          </div>
+          <p className="max-w-xl text-pretty text-base text-muted-foreground">
+            Invite a rival captain and take turns picking a 7-a-side squad. An
+            adjustable shot clock keeps it moving — both squads fill up in real
+            time.
+          </p>
+        </div>
 
-          <div className="flex items-center justify-center px-6 pb-12 lg:flex-1 lg:pb-0">
-            <div className="w-full max-w-sm rounded-2xl border border-border/60 bg-card/85 p-6 shadow-lg backdrop-blur-md">
-              <AuthPanel />
-              <p className="mt-4 text-center text-xs text-muted-foreground">
-                Free to play · No app to install
-              </p>
-            </div>
-          </div>
+        <div className="w-full max-w-sm rounded-2xl border border-border/60 bg-card/85 p-6 shadow-lg backdrop-blur-md">
+          <AuthPanel />
+          <p className="mt-4 text-center text-xs text-muted-foreground">
+            Free to play · No app to install
+          </p>
         </div>
       </section>
 
