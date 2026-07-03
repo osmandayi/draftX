@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
-import { LogOut, Mail } from "lucide-react";
+import { AtSign, LogOut, Mail } from "lucide-react";
 import { AppHeader } from "@/components/layout/app-header";
 import { ProfileForm } from "@/components/profile-form";
+import { LinkEmailForm } from "@/components/link-email-form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { requireUser } from "@/server/auth";
 import { getProfile } from "@/server/repositories/profiles";
+import { isSyntheticEmail } from "@/lib/username";
 
 export const metadata: Metadata = { title: "Profile" };
 
@@ -15,7 +17,9 @@ export default async function ProfilePage() {
   const user = await requireUser();
   const profile = await getProfile(user.id);
   const displayName = profile?.display_name ?? "";
-  const initial = (displayName || user.email || "?").charAt(0).toUpperCase();
+  const username = profile?.username ?? null;
+  const initial = (displayName || username || "?").charAt(0).toUpperCase();
+  const hasRealEmail = !isSyntheticEmail(user.email);
 
   return (
     <>
@@ -37,15 +41,40 @@ export default async function ProfilePage() {
                   {displayName || "Captain"}
                 </span>
                 <span className="flex items-center gap-1 text-xs font-normal text-muted-foreground">
-                  <Mail className="size-3" />
-                  {user.email}
+                  {username ? (
+                    <>
+                      <AtSign className="size-3" />
+                      {username}
+                    </>
+                  ) : (
+                    <>
+                      <Mail className="size-3" />
+                      {user.email}
+                    </>
+                  )}
                 </span>
               </span>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <ProfileForm displayName={displayName} />
+
             <Separator />
+
+            {hasRealEmail ? (
+              <div className="space-y-1">
+                <p className="text-sm font-medium">Email</p>
+                <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                  <Mail className="size-4" />
+                  {user.email}
+                </p>
+              </div>
+            ) : (
+              <LinkEmailForm />
+            )}
+
+            <Separator />
+
             <form action="/auth/signout" method="post">
               <Button type="submit" variant="outline" className="w-full">
                 <LogOut className="size-4" />

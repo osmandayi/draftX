@@ -11,12 +11,14 @@ export interface Database {
       profiles: {
         Row: {
           id: string;
+          username: string | null;
           display_name: string | null;
           avatar_url: string | null;
           created_at: string;
         };
         Insert: {
           id: string;
+          username?: string | null;
           display_name?: string | null;
           avatar_url?: string | null;
           created_at?: string;

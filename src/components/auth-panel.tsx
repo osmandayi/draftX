@@ -1,7 +1,7 @@
 import { GoogleSignInButton } from "@/components/google-signin-button";
-import { EmailAuthForm } from "@/components/email-auth-form";
+import { UsernameAuthForm } from "@/components/username-auth-form";
 
-/** Google + email/password sign-in options, separated by an "or" divider. */
+/** Google + username/password sign-in options, separated by an "or" divider. */
 export function AuthPanel({ next }: { next?: string }) {
   return (
     <div className="space-y-4">
@@ -15,7 +15,7 @@ export function AuthPanel({ next }: { next?: string }) {
         or
         <span className="h-px flex-1 bg-border" />
       </div>
-      <EmailAuthForm next={next} />
+      <UsernameAuthForm next={next} />
     </div>
   );
 }
