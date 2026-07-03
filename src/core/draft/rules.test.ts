@@ -30,6 +30,7 @@ function baseDraft(overrides: Partial<DraftState> = {}): DraftState {
     captainB: B,
     currentCaptain: A,
     turnIndex: 0,
+    turnSeconds: 120,
     turnDeadline: null,
     players: makePlayers(12),
     ...overrides,

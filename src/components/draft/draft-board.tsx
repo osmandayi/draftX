@@ -38,7 +38,11 @@ export function DraftBoard({
   return (
     <div className="grid gap-4">
       <div className="flex items-center gap-4 rounded-xl border border-border/60 bg-card p-4">
-        <TurnTimer deadline={draft.turnDeadline} onExpire={handleExpire} />
+        <TurnTimer
+          deadline={draft.turnDeadline}
+          totalSeconds={draft.turnSeconds}
+          onExpire={handleExpire}
+        />
         <div className="min-w-0">
           <p className="text-xs uppercase tracking-wide text-muted-foreground">
             Pick {pickNumber} of {TOTAL_PICKS}

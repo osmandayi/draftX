@@ -26,6 +26,8 @@ export interface DraftState {
   currentCaptain: string | null;
   /** 0-based index into the pick schedule. */
   turnIndex: number;
+  /** Seconds allowed per turn for this draft (chosen at start). */
+  turnSeconds: number;
   /** ISO timestamp when the current turn expires, or null. */
   turnDeadline: string | null;
   players: DraftPlayer[];

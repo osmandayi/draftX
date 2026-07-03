@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { Plus, X } from "lucide-react";
 import { toast } from "sonner";
 import { addPlayer, removePlayer } from "@/server/actions/players";
@@ -20,7 +20,17 @@ export function PlayerPoolEditor({
   const [name, setName] = useState("");
   const [pending, startTransition] = useTransition();
   const inputRef = useRef<HTMLInputElement>(null);
+  const refocus = useRef(false);
   const full = players.length >= DRAFTABLE_PLAYERS;
+
+  // Refocus the input after a successful add settles — but only once the
+  // transition has ended (the input is disabled while pending) and the pool
+  // isn't full yet, so the captain can keep adding names with Enter.
+  useEffect(() => {
+    if (pending || !refocus.current) return;
+    refocus.current = false;
+    if (!full) inputRef.current?.focus();
+  }, [pending, full]);
 
   function add() {
     const trimmed = name.trim();
@@ -32,7 +42,7 @@ export function PlayerPoolEditor({
         return;
       }
       setName("");
-      inputRef.current?.focus();
+      refocus.current = true;
     });
   }
 

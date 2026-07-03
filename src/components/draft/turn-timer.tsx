@@ -1,22 +1,24 @@
 "use client";
 
 import { useCountdown } from "@/hooks/use-countdown";
-import { TURN_SECONDS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 /**
- * Circular 120s countdown driven by the absolute `turn_deadline`. Fires
- * `onExpire` once when it hits zero (both clients fire; the RPC is idempotent).
+ * Circular countdown driven by the absolute `turn_deadline`, scaled to this
+ * draft's `totalSeconds`. Fires `onExpire` once when it hits zero (both clients
+ * fire; the RPC is idempotent).
  */
 export function TurnTimer({
   deadline,
+  totalSeconds,
   onExpire,
 }: {
   deadline: string | null;
+  totalSeconds: number;
   onExpire: () => void;
 }) {
   const secondsLeft = useCountdown(deadline, onExpire);
-  const pct = Math.max(0, Math.min(1, secondsLeft / TURN_SECONDS));
+  const pct = Math.max(0, Math.min(1, secondsLeft / totalSeconds));
   const urgent = secondsLeft <= 15;
 
   const radius = 26;

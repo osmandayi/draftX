@@ -13,6 +13,7 @@ function applyDraftRow(state: DraftState, row: DraftRow): DraftState {
     captainB: row.captain_b,
     currentCaptain: row.current_captain,
     turnIndex: row.turn_index,
+    turnSeconds: row.turn_seconds,
     turnDeadline: row.turn_deadline,
   };
 }

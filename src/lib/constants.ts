@@ -12,8 +12,18 @@ export const CAPTAIN_COUNT = 2;
 /** Players that must be added (and then drafted) besides the captains. */
 export const DRAFTABLE_PLAYERS = TOTAL_PLAYERS - CAPTAIN_COUNT; // 12
 
-/** Seconds allowed per turn before the engine auto-picks. */
-export const TURN_SECONDS = 120;
+/** Default seconds allowed per turn before the engine auto-picks. */
+export const TURN_SECONDS_DEFAULT = 120;
+
+/** Configurable range for the per-turn shot clock (chosen at draft start). */
+export const TURN_SECONDS_MIN = 20;
+export const TURN_SECONDS_MAX = 120;
+
+/** Step for the turn-timer slider, in seconds. */
+export const TURN_SECONDS_STEP = 5;
+
+/** @deprecated Prefer {@link TURN_SECONDS_DEFAULT}. */
+export const TURN_SECONDS = TURN_SECONDS_DEFAULT;
 
 /**
  * Explicit pick schedule. Each entry is the captain on the clock for that

@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation";
 import { Clock, Radio, Trophy, Users } from "lucide-react";
-import { GoogleSignInButton } from "@/components/google-signin-button";
+import { AuthPanel } from "@/components/auth-panel";
 import { PitchBackground } from "@/components/pitch-background";
 import { getCurrentUser } from "@/server/auth";
-import { TURN_SECONDS } from "@/lib/constants";
+import { TURN_SECONDS_MAX, TURN_SECONDS_MIN } from "@/lib/constants";
 
 const FEATURES = [
   {
@@ -18,8 +18,8 @@ const FEATURES = [
   },
   {
     icon: Clock,
-    title: `${TURN_SECONDS}s shot clock`,
-    body: "Each turn is timed. Run out the clock and the engine auto-picks for you.",
+    title: "Adjustable shot clock",
+    body: `Set each turn from ${TURN_SECONDS_MIN} to ${TURN_SECONDS_MAX} seconds. Run out the clock and the engine auto-picks for you.`,
   },
 ];
 
@@ -43,13 +43,13 @@ export default async function LandingPage() {
 
         <p className="mt-5 max-w-xl text-pretty text-base text-muted-foreground sm:text-lg">
           Create a draft, invite a second captain, and take turns picking from a
-          pool of 12 players. A {TURN_SECONDS}-second clock keeps it moving —
-          both squads fill up in real time.
+          pool of 12 players. An adjustable shot clock keeps it moving — both
+          squads fill up in real time.
         </p>
 
-        <div className="mt-8">
-          <GoogleSignInButton label="Sign in with Google to start" />
-          <p className="mt-3 text-xs text-muted-foreground">
+        <div className="mt-8 w-full max-w-xs rounded-2xl border border-border/60 bg-card/80 p-5 shadow-sm backdrop-blur-sm">
+          <AuthPanel />
+          <p className="mt-3 text-center text-xs text-muted-foreground">
             Free to play · No app to install
           </p>
         </div>
@@ -60,13 +60,17 @@ export default async function LandingPage() {
           {FEATURES.map(({ icon: Icon, title, body }) => (
             <div
               key={title}
-              className="rounded-xl border border-border/60 bg-card p-5 text-left"
+              className="flex flex-col rounded-xl border border-border/60 bg-card p-6 text-left"
             >
-              <span className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <Icon className="size-5" />
+              <span className="flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <Icon className="size-6" />
               </span>
-              <h3 className="mt-3 font-semibold">{title}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">{body}</p>
+              <h3 className="mt-4 text-base font-semibold tracking-tight">
+                {title}
+              </h3>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                {body}
+              </p>
             </div>
           ))}
         </div>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Trophy, Users } from "lucide-react";
-import { GoogleSignInButton } from "@/components/google-signin-button";
+import { AuthPanel } from "@/components/auth-panel";
 import { JoinDraftButton } from "@/components/draft/join-draft-button";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -59,11 +59,7 @@ export default async function JoinPage({
                   <p className="text-sm text-muted-foreground">
                     Sign in to join as Captain B.
                   </p>
-                  <GoogleSignInButton
-                    next={`/join/${token}`}
-                    label="Sign in with Google"
-                    className="w-full"
-                  />
+                  <AuthPanel next={`/join/${token}`} />
                 </div>
               ) : (
                 <JoinDraftButton token={token} />

@@ -38,6 +38,7 @@ export interface Database {
           captain_b: string | null;
           current_captain: string | null;
           turn_index: number;
+          turn_seconds: number;
           turn_deadline: string | null;
           created_at: string;
           started_at: string | null;
@@ -96,7 +97,10 @@ export interface Database {
       };
       remove_player: { Args: { p_player_id: string }; Returns: undefined };
       join_draft: { Args: { p_token: string }; Returns: string };
-      start_draft: { Args: { p_draft_id: string }; Returns: undefined };
+      start_draft: {
+        Args: { p_draft_id: string; p_turn_seconds?: number };
+        Returns: undefined;
+      };
       make_pick: {
         Args: { p_draft_id: string; p_player_id: string };
         Returns: undefined;

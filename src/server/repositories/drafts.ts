@@ -12,6 +12,7 @@ export function toDraftState(draft: DraftRow, players: PlayerRow[]): DraftState 
     captainB: draft.captain_b,
     currentCaptain: draft.current_captain,
     turnIndex: draft.turn_index,
+    turnSeconds: draft.turn_seconds,
     turnDeadline: draft.turn_deadline,
     players: players
       .slice()
