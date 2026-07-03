@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { Menu as MenuPrimitive } from "@base-ui/react/menu"
 
 import { cn } from "@/lib/utils"
@@ -71,12 +72,14 @@ function DropdownMenuLinkItem({
   )
 }
 
+// A plain, non-interactive header. Base UI's Menu.GroupLabel requires a
+// surrounding <Menu.Group>, so we use a div to avoid that coupling.
 function DropdownMenuLabel({
   className,
   ...props
-}: MenuPrimitive.GroupLabel.Props) {
+}: React.ComponentProps<"div">) {
   return (
-    <MenuPrimitive.GroupLabel
+    <div
       data-slot="dropdown-menu-label"
       className={cn(
         "px-2 py-1.5 text-xs font-medium text-muted-foreground",
