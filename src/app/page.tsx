@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { Clock, Radio, Trophy, Users } from "lucide-react";
 import { GoogleSignInButton } from "@/components/google-signin-button";
+import { PitchBackground } from "@/components/pitch-background";
 import { getCurrentUser } from "@/server/auth";
 import { TURN_SECONDS } from "@/lib/constants";
 
@@ -29,13 +30,7 @@ export default async function LandingPage() {
   return (
     <main className="flex flex-1 flex-col">
       <section className="relative flex flex-1 flex-col items-center justify-center overflow-hidden px-5 py-16 text-center">
-        <div
-          className="pointer-events-none absolute inset-0 -z-10 opacity-[0.07]"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(90deg, transparent 0 48px, var(--primary) 48px 96px)",
-          }}
-        />
+        <PitchBackground />
         <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-border/70 bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
           <Trophy className="size-3.5 text-primary" />
           Live captain drafts

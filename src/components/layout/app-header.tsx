@@ -2,14 +2,13 @@ import Link from "next/link";
 import { Trophy } from "lucide-react";
 import { getCurrentUser } from "@/server/auth";
 import { getProfile } from "@/server/repositories/profiles";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { UserMenu } from "@/components/layout/user-menu";
 
 /** App chrome shown on authenticated pages. Mobile-first, sticky top bar. */
 export async function AppHeader() {
   const user = await getCurrentUser();
   const profile = user ? await getProfile(user.id) : null;
-  const initial = (profile?.display_name ?? "?").charAt(0).toUpperCase();
 
   return (
     <header className="sticky top-0 z-30 border-b border-border/60 bg-background/80 backdrop-blur">
@@ -28,14 +27,11 @@ export async function AppHeader() {
           <Button variant="ghost" size="sm" render={<Link href="/history" />}>
             History
           </Button>
-          <Link href="/profile" aria-label="Profile" className="ml-1">
-            <Avatar className="size-8">
-              {profile?.avatar_url ? (
-                <AvatarImage src={profile.avatar_url} alt="" />
-              ) : null}
-              <AvatarFallback>{initial}</AvatarFallback>
-            </Avatar>
-          </Link>
+          <UserMenu
+            displayName={profile?.display_name ?? ""}
+            avatarUrl={profile?.avatar_url ?? null}
+            email={user?.email ?? null}
+          />
         </nav>
       </div>
     </header>

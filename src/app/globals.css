@@ -122,11 +122,24 @@
   --primary: oklch(0.62 0.15 150);
   --primary-foreground: oklch(0.985 0 0);
   --ring: oklch(0.62 0.15 150);
+
+  /* Landing pitch background */
+  --pitch-turf: oklch(0.87 0.06 150);
+  --pitch-turf-alt: oklch(0.83 0.07 150);
+  --pitch-line: oklch(1 0 0 / 0.85);
+  --pitch-veil: oklch(1 0 0 / 0.55);
+  --pitch-glow: oklch(1 0 0 / 0.45);
 }
 .dark {
   --primary: oklch(0.68 0.16 152);
   --primary-foreground: oklch(0.16 0.02 152);
   --ring: oklch(0.68 0.16 152);
+
+  --pitch-turf: oklch(0.33 0.05 152);
+  --pitch-turf-alt: oklch(0.29 0.05 152);
+  --pitch-line: oklch(1 0 0 / 0.38);
+  --pitch-veil: oklch(0.145 0 0 / 0.55);
+  --pitch-glow: oklch(0.82 0.13 150 / 0.22);
 }
 
 @layer base {
@@ -138,5 +151,87 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Landing pitch background (see components/pitch-background.tsx)
+   --------------------------------------------------------------------------- */
+.pitch-grass {
+  background-color: var(--pitch-turf);
+  background-image: repeating-linear-gradient(
+    180deg,
+    var(--pitch-turf) 0 56px,
+    var(--pitch-turf-alt) 56px 112px
+  );
+}
+
+.pitch-lines {
+  color: var(--pitch-line);
+}
+
+.pitch-overlay {
+  background:
+    radial-gradient(
+      120% 75% at 50% 34%,
+      transparent 0%,
+      transparent 46%,
+      var(--pitch-veil) 100%
+    ),
+    linear-gradient(180deg, transparent 52%, var(--background) 100%);
+}
+
+.pitch-sweep {
+  background: radial-gradient(
+    38% 55% at 50% 50%,
+    var(--pitch-glow) 0%,
+    transparent 72%
+  );
+  will-change: transform, opacity;
+  animation: pitch-sweep 15s ease-in-out infinite;
+}
+
+.pitch-ball {
+  top: 17%;
+  left: 15%;
+  width: 30px;
+  height: 30px;
+  filter: drop-shadow(0 4px 5px rgb(0 0 0 / 0.28));
+  will-change: transform;
+  animation: pitch-float 11s ease-in-out infinite;
+}
+
+@keyframes pitch-sweep {
+  0%,
+  100% {
+    transform: translate(-24%, -14%);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate(26%, 16%);
+    opacity: 0.85;
+  }
+}
+
+@keyframes pitch-float {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(46px, -16px) rotate(60deg);
+  }
+  50% {
+    transform: translate(104px, 10px) rotate(120deg);
+  }
+  75% {
+    transform: translate(38px, 26px) rotate(200deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pitch-sweep,
+  .pitch-ball {
+    animation: none;
   }
 }
