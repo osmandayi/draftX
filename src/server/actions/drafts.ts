@@ -6,6 +6,7 @@ import { requireUser } from "../auth";
 import { createSupabaseServerClient } from "../supabase/server";
 import { TURN_SECONDS_MAX, TURN_SECONDS_MIN } from "@/lib/constants";
 import { type ActionResult, errorMessage, fail, ok } from "./types";
+import { RATE_LIMIT_MESSAGE, checkLimit } from "../rate-limit";
 
 /** Create a new draft; the creator becomes Captain A. Redirects to the room. */
 export async function createDraft(formData: FormData): Promise<ActionResult> {
@@ -15,6 +16,9 @@ export async function createDraft(formData: FormData): Promise<ActionResult> {
   if (name.length < 1 || name.length > 80) {
     return fail("Draft name must be between 1 and 80 characters.");
   }
+
+  const createGate = await checkLimit(user.id, "create");
+  if (!createGate.ok) return fail(RATE_LIMIT_MESSAGE);
 
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
@@ -31,7 +35,9 @@ export async function createDraft(formData: FormData): Promise<ActionResult> {
 
 /** Join a draft as Captain B using an invite token. Redirects to the room. */
 export async function joinDraft(token: string): Promise<ActionResult> {
-  await requireUser();
+  const user = await requireUser();
+  const gate = await checkLimit(user.id, "join");
+  if (!gate.ok) return fail(RATE_LIMIT_MESSAGE);
   const supabase = await createSupabaseServerClient();
 
   const { data, error } = await supabase.rpc("join_draft", { p_token: token });
@@ -43,7 +49,9 @@ export async function joinDraft(token: string): Promise<ActionResult> {
 
 /** Remove Captain B from a draft while in the lobby (creator only). */
 export async function removeCaptainB(draftId: string): Promise<ActionResult> {
-  await requireUser();
+  const user = await requireUser();
+  const gate = await checkLimit(user.id, "manage");
+  if (!gate.ok) return fail(RATE_LIMIT_MESSAGE);
   const supabase = await createSupabaseServerClient();
 
   const { error } = await supabase.rpc("remove_captain_b", {
@@ -60,7 +68,9 @@ export async function startDraft(
   draftId: string,
   turnSeconds: number,
 ): Promise<ActionResult> {
-  await requireUser();
+  const user = await requireUser();
+  const gate = await checkLimit(user.id, "manage");
+  if (!gate.ok) return fail(RATE_LIMIT_MESSAGE);
   const supabase = await createSupabaseServerClient();
 
   const clamped = Math.min(

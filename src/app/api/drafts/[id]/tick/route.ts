@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/server/auth";
+import { checkLimit } from "@/server/rate-limit";
 import { createSupabaseServerClient } from "@/server/supabase/server";
 
 /**
@@ -14,6 +15,14 @@ export async function POST(
   const user = await getCurrentUser();
   if (!user) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+
+  const gate = await checkLimit(user.id, "tick");
+  if (!gate.ok) {
+    return NextResponse.json(
+      { error: "rate_limited" },
+      { status: 429, headers: { "Retry-After": String(gate.retryAfter) } },
+    );
   }
 
   const { id } = await params;

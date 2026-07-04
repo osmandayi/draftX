@@ -4,16 +4,20 @@ import { revalidatePath } from "next/cache";
 import { requireUser } from "../auth";
 import { createSupabaseServerClient } from "../supabase/server";
 import { type ActionResult, errorMessage, fail, ok } from "./types";
+import { RATE_LIMIT_MESSAGE, checkLimit } from "../rate-limit";
 
 /** Add a player to the pool (lobby only, max 12). */
 export async function addPlayer(
   draftId: string,
   name: string,
 ): Promise<ActionResult> {
-  await requireUser();
+  const user = await requireUser();
   const trimmed = name.trim();
   if (!trimmed) return fail("Player name is required.");
   if (trimmed.length > 60) return fail("Player name is too long.");
+
+  const gate = await checkLimit(user.id, "pool");
+  if (!gate.ok) return fail(RATE_LIMIT_MESSAGE);
 
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.rpc("add_player", {
@@ -31,7 +35,9 @@ export async function removePlayer(
   draftId: string,
   playerId: string,
 ): Promise<ActionResult> {
-  await requireUser();
+  const user = await requireUser();
+  const gate = await checkLimit(user.id, "pool");
+  if (!gate.ok) return fail(RATE_LIMIT_MESSAGE);
   const supabase = await createSupabaseServerClient();
 
   const { error } = await supabase.rpc("remove_player", {
