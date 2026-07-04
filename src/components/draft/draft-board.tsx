@@ -44,6 +44,7 @@ export function DraftBoard({
         <TurnTimer
           deadline={draft.turnDeadline}
           totalSeconds={draft.turnSeconds}
+          slot={onClockSlot}
           onExpire={handleExpire}
         />
         <div className="min-w-0">

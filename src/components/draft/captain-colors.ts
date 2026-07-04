@@ -18,6 +18,8 @@ export interface CaptainColor {
   badge: string;
   /** Hover accent for interactive pickable items (border + bg). */
   hover: string;
+  /** SVG stroke for the countdown ring. */
+  stroke: string;
 }
 
 export const CAPTAIN_COLORS: Record<"A" | "B", CaptainColor> = {
@@ -29,6 +31,7 @@ export const CAPTAIN_COLORS: Record<"A" | "B", CaptainColor> = {
     panelRing: "ring-emerald-500/40",
     badge: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
     hover: "hover:border-emerald-500 hover:bg-emerald-500/10",
+    stroke: "stroke-emerald-500",
   },
   B: {
     text: "text-orange-600 dark:text-orange-400",
@@ -38,5 +41,6 @@ export const CAPTAIN_COLORS: Record<"A" | "B", CaptainColor> = {
     panelRing: "ring-orange-500/40",
     badge: "bg-orange-500/15 text-orange-600 dark:text-orange-400",
     hover: "hover:border-orange-500 hover:bg-orange-500/10",
+    stroke: "stroke-orange-500",
   },
 };

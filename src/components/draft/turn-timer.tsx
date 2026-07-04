@@ -2,24 +2,29 @@
 
 import { useCountdown } from "@/hooks/use-countdown";
 import { cn } from "@/lib/utils";
+import { CAPTAIN_COLORS } from "./captain-colors";
 
 /**
  * Circular countdown driven by the absolute `turn_deadline`, scaled to this
- * draft's `totalSeconds`. Fires `onExpire` once when it hits zero (both clients
- * fire; the RPC is idempotent).
+ * draft's `totalSeconds`. The ring takes the on-clock captain's color (green
+ * for A, orange for B), turning red in the final 15s. Fires `onExpire` once
+ * when it hits zero (both clients fire; the RPC is idempotent).
  */
 export function TurnTimer({
   deadline,
   totalSeconds,
+  slot,
   onExpire,
 }: {
   deadline: string | null;
   totalSeconds: number;
+  slot: "A" | "B" | null;
   onExpire: () => void;
 }) {
   const secondsLeft = useCountdown(deadline, onExpire);
   const pct = Math.max(0, Math.min(1, secondsLeft / totalSeconds));
   const urgent = secondsLeft <= 15;
+  const ringStroke = slot ? CAPTAIN_COLORS[slot].stroke : "stroke-primary";
 
   const radius = 26;
   const circumference = 2 * Math.PI * radius;
@@ -44,7 +49,7 @@ export function TurnTimer({
           strokeLinecap="round"
           className={cn(
             "transition-[stroke-dashoffset] duration-300 ease-linear",
-            urgent ? "stroke-destructive" : "stroke-primary",
+            urgent ? "stroke-destructive" : ringStroke,
           )}
           strokeDasharray={circumference}
           strokeDashoffset={circumference * (1 - pct)}
