@@ -99,6 +99,7 @@ export interface Database {
       };
       remove_player: { Args: { p_player_id: string }; Returns: undefined };
       join_draft: { Args: { p_token: string }; Returns: string };
+      remove_captain_b: { Args: { p_draft_id: string }; Returns: undefined };
       start_draft: {
         Args: { p_draft_id: string; p_turn_seconds?: number };
         Returns: undefined;

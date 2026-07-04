@@ -41,6 +41,20 @@ export async function joinDraft(token: string): Promise<ActionResult> {
   redirect(`/drafts/${data}/room`);
 }
 
+/** Remove Captain B from a draft while in the lobby (creator only). */
+export async function removeCaptainB(draftId: string): Promise<ActionResult> {
+  await requireUser();
+  const supabase = await createSupabaseServerClient();
+
+  const { error } = await supabase.rpc("remove_captain_b", {
+    p_draft_id: draftId,
+  });
+  if (error) return fail(errorMessage(error));
+
+  revalidatePath(`/drafts/${draftId}/room`);
+  return ok(undefined);
+}
+
 /** Start the draft (creator only) with a chosen per-turn timer (20–120s). */
 export async function startDraft(
   draftId: string,

@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { CaptainTag } from "./captain-tag";
 import { InviteButton } from "./invite-button";
 import { PlayerPoolEditor } from "./player-pool-editor";
+import { RemoveCaptainButton } from "./remove-captain-button";
 import { StartDraftButton } from "./start-draft-button";
 import type { CaptainMap } from "./types";
 
@@ -62,6 +63,9 @@ export function Lobby({
                 Open — share the invite link
               </span>
             )}
+            {hasSecond && isCreator ? (
+              <RemoveCaptainButton draftId={draft.id} />
+            ) : null}
           </div>
 
           {!hasSecond ? (
