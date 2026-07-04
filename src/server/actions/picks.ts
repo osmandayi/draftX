@@ -3,6 +3,7 @@
 import { requireUser } from "../auth";
 import { createSupabaseServerClient } from "../supabase/server";
 import { type ActionResult, errorMessage, fail, ok } from "./types";
+import { RATE_LIMIT_MESSAGE, checkLimit } from "../rate-limit";
 
 /**
  * Draft a player. The database RPC re-validates turn ownership + availability
@@ -12,7 +13,9 @@ export async function makePick(
   draftId: string,
   playerId: string,
 ): Promise<ActionResult> {
-  await requireUser();
+  const user = await requireUser();
+  const gate = await checkLimit(user.id, "pick");
+  if (!gate.ok) return fail(RATE_LIMIT_MESSAGE);
   const supabase = await createSupabaseServerClient();
 
   const { error } = await supabase.rpc("make_pick", {
