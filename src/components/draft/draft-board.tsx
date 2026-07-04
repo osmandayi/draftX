@@ -74,7 +74,7 @@ export function DraftBoard({
         </div>
       </div>
 
-      <PickPool draft={draft} isMyTurn={isMyTurn} />
+      <PickPool draft={draft} isMyTurn={isMyTurn} slot={onClockSlot} />
 
       <div className="grid gap-3 sm:grid-cols-2">
         <TeamPanel

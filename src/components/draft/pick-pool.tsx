@@ -6,17 +6,22 @@ import { makePick } from "@/server/actions/picks";
 import { availablePlayers } from "@/core/draft/rules";
 import type { DraftState } from "@/core/draft/types";
 import { cn } from "@/lib/utils";
+import { CAPTAIN_COLORS } from "./captain-colors";
 
 /** Grid of available players. Clickable only when it is the viewer's turn. */
 export function PickPool({
   draft,
   isMyTurn,
+  slot,
 }: {
   draft: DraftState;
   isMyTurn: boolean;
+  /** Slot of the captain on the clock, to tint the hover accent. */
+  slot: "A" | "B" | null;
 }) {
   const [pending, startTransition] = useTransition();
   const players = availablePlayers(draft.players);
+  const hover = slot ? CAPTAIN_COLORS[slot].hover : "";
 
   function pick(playerId: string) {
     if (!isMyTurn) return;
@@ -44,7 +49,7 @@ export function PickPool({
             className={cn(
               "rounded-lg border px-3 py-3 text-left text-sm font-medium transition-colors",
               isMyTurn
-                ? "border-border bg-card hover:border-primary hover:bg-primary/5 active:scale-[0.98]"
+                ? cn("border-border bg-card active:scale-[0.98]", hover)
                 : "cursor-not-allowed border-border/50 bg-muted/40 text-muted-foreground",
             )}
           >
