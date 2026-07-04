@@ -10,6 +10,7 @@ real time**. 2 captains + 12 draftable players, a fixed pick order, and a
 - **Next.js 15** (App Router) + **TypeScript** (strict)
 - **TailwindCSS v4** + **shadcn/ui** (mobile-first)
 - **Supabase**: Postgres, Auth (Google OAuth), Realtime
+- **Upstash Redis** (optional): per-user rate limiting on mutating endpoints
 - **Vitest** for pure domain unit tests
 
 ## How the draft works
@@ -33,12 +34,24 @@ src/
   app/               Landing, dashboard, drafts/new, join/[token],
                      drafts/[id]/room, history, profile, auth routes, api
 supabase/
-  migrations/0001_init.sql   Tables, RLS, RPC engine, realtime publication
+  migrations/        0001_init … 0007_join_draft_code (apply in order)
 ```
 
 The database is the single source of truth. Clients call Server Actions →
 RPCs validate turn ownership + availability atomically → Realtime pushes the
 new rows to both captains.
+
+### Security & abuse hardening
+
+- **RLS everywhere.** Rows are readable only by draft members; `profiles` is
+  restricted to yourself and people you share a draft with (`0006`).
+- **Server-authoritative RPCs.** Every mutation goes through a
+  `SECURITY DEFINER` RPC — clients can't write tables directly.
+- **Machine-readable outcomes.** `join_draft` returns a stable `code`
+  (`0007`) so the join-race UX never depends on error-message wording.
+- **Rate limiting.** Mutating Server Actions and the turn-timeout path are
+  rate-limited per user via Upstash Redis. Unconfigured (no Upstash env), the
+  limiter no-ops so local dev is unaffected — see the setup note below.
 
 ## Setup
 
@@ -51,7 +64,9 @@ npm install
 ### 2. Create a Supabase project
 
 1. Create a project at [supabase.com](https://supabase.com).
-2. In **SQL Editor**, run `supabase/migrations/0001_init.sql`.
+2. In **SQL Editor**, run every file in `supabase/migrations/` **in order**
+   (`0001_init.sql` → `0007_join_draft_code.sql`), or `supabase db push` if the
+   CLI is wired up. Later migrations depend on earlier ones — don't skip any.
 3. In **Authentication → Providers → Google**, enable Google and add your
    Google OAuth **Client ID / Secret** (create them in the Google Cloud
    console). Set the authorized redirect URL to:
@@ -71,6 +86,18 @@ Fill in from **Project Settings → API**:
 NEXT_PUBLIC_SUPABASE_URL=...
 NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 ```
+
+**Optional — rate limiting.** To enable per-user rate limiting, create an
+[Upstash Redis](https://upstash.com) database and add its REST credentials:
+
+```
+UPSTASH_REDIS_REST_URL=...
+UPSTASH_REDIS_REST_TOKEN=...
+```
+
+Leave them blank for local dev — the limiter no-ops. In **production** these
+must be set, or rate limiting stays disabled (the app logs a warning at
+startup if it detects this).
 
 ### 4. Run
 
