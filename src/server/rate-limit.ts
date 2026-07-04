@@ -32,19 +32,27 @@ function redisFromEnv(): Redis | null {
   return new Redis({ url, token });
 }
 
+// Memoized Redis singleton instance.
+let redisSingleton: Redis | null | undefined;
+
+function redis(): Redis | null {
+  if (redisSingleton === undefined) redisSingleton = redisFromEnv();
+  return redisSingleton;
+}
+
 // Lazily built, memoized per-kind limiters. Null when Upstash is unconfigured.
 let limiters: Partial<Record<LimitKind, Ratelimit>> | null | undefined;
 
 function limiterFor(kind: LimitKind): Ratelimit | null {
   if (limiters === undefined) {
-    const redis = redisFromEnv();
-    limiters = redis ? {} : null;
+    const redisClient = redis();
+    limiters = redisClient ? {} : null;
   }
   if (limiters === null) return null;
   if (!limiters[kind]) {
     const { limit, window } = WINDOWS[kind];
     limiters[kind] = new Ratelimit({
-      redis: redisFromEnv()!,
+      redis: redis()!,
       limiter: Ratelimit.slidingWindow(limit, window),
       prefix: `rl:${kind}`,
     });
