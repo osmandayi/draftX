@@ -36,7 +36,14 @@ function redisFromEnv(): Redis | null {
 let redisSingleton: Redis | null | undefined;
 
 function redis(): Redis | null {
-  if (redisSingleton === undefined) redisSingleton = redisFromEnv();
+  if (redisSingleton === undefined) {
+    redisSingleton = redisFromEnv();
+    if (!redisSingleton && process.env.NODE_ENV === "production") {
+      console.warn(
+        "[rate-limit] Upstash env vars unset in production — rate limiting is DISABLED (fail-open).",
+      );
+    }
+  }
   return redisSingleton;
 }
 

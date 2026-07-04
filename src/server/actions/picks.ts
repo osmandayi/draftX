@@ -31,7 +31,9 @@ export async function makePick(
  * calling it early or from multiple clients is a harmless no-op.
  */
 export async function resolveTimeout(draftId: string): Promise<ActionResult> {
-  await requireUser();
+  const user = await requireUser();
+  const gate = await checkLimit(user.id, "tick");
+  if (!gate.ok) return fail(RATE_LIMIT_MESSAGE);
   const supabase = await createSupabaseServerClient();
 
   const { error } = await supabase.rpc("resolve_timeout", {
