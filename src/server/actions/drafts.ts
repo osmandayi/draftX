@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { requireUser } from "../auth";
 import { createSupabaseServerClient } from "../supabase/server";
 import { TURN_SECONDS_MAX, TURN_SECONDS_MIN } from "@/lib/constants";
+import type { JoinDraftCode } from "@/lib/database.types";
 import { type ActionResult, errorMessage, fail, ok } from "./types";
 import { RATE_LIMIT_MESSAGE, checkLimit } from "../rate-limit";
 
@@ -33,6 +34,20 @@ export async function createDraft(formData: FormData): Promise<ActionResult> {
   redirect(`/drafts/${data.id}/room`);
 }
 
+/**
+ * Turkish messages for each non-success join_draft outcome code. Keyed by the
+ * stable machine code so wording changes here never affect control flow.
+ */
+const JOIN_ERROR_MESSAGES: Record<
+  Exclude<JoinDraftCode, "joined" | "already_joined">,
+  string
+> = {
+  invalid: "Bu davet bağlantısı geçersiz veya süresi dolmuş.",
+  not_lobby: "Bu draft çoktan başladı, artık katılınamaz.",
+  is_creator: "Bu draftı sen oluşturdun.",
+  full: "Bu draftta zaten iki kaptan var.",
+};
+
 /** Join a draft as Captain B using an invite token. Redirects to the room. */
 export async function joinDraft(token: string): Promise<ActionResult> {
   const user = await requireUser();
@@ -43,8 +58,14 @@ export async function joinDraft(token: string): Promise<ActionResult> {
   const { data, error } = await supabase.rpc("join_draft", { p_token: token });
   if (error || !data) return fail(errorMessage(error));
 
-  revalidatePath("/dashboard");
-  redirect(`/drafts/${data}/room`);
+  const { code, draft_id } = data;
+
+  if (code === "joined" || code === "already_joined") {
+    revalidatePath("/dashboard");
+    redirect(`/drafts/${draft_id}/room`);
+  }
+
+  return fail(JOIN_ERROR_MESSAGES[code], code);
 }
 
 /** Remove Captain B from a draft while in the lobby (creator only). */

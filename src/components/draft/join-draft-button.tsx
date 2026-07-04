@@ -6,8 +6,9 @@ import { toast } from "sonner";
 import { joinDraft } from "@/server/actions/drafts";
 import { Button } from "@/components/ui/button";
 
-// Errors that mean this user can never join this draft → send them to safety.
-const TERMINAL = ["two captains", "already started"];
+// join_draft outcome codes that mean this user can never join this draft →
+// send them to safety. Matches the stable codes from 0007_join_draft_code.sql.
+const TERMINAL = new Set(["full", "not_lobby"]);
 
 export function JoinDraftButton({ token }: { token: string }) {
   const router = useRouter();
@@ -19,7 +20,7 @@ export function JoinDraftButton({ token }: { token: string }) {
       const result = await joinDraft(token);
       if (result && !result.ok) {
         toast.error(result.error);
-        if (TERMINAL.some((t) => result.error.toLowerCase().includes(t))) {
+        if (result.code && TERMINAL.has(result.code)) {
           router.push("/dashboard");
         }
       }

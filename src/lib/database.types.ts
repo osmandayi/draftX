@@ -5,6 +5,15 @@
 
 export type DraftStatus = "lobby" | "active" | "completed";
 
+/** Outcome codes returned by the `join_draft` RPC (see 0007_join_draft_code.sql). */
+export type JoinDraftCode =
+  | "joined"
+  | "already_joined"
+  | "invalid"
+  | "not_lobby"
+  | "is_creator"
+  | "full";
+
 export interface Database {
   public: {
     Tables: {
@@ -98,7 +107,10 @@ export interface Database {
         Returns: Database["public"]["Tables"]["players"]["Row"];
       };
       remove_player: { Args: { p_player_id: string }; Returns: undefined };
-      join_draft: { Args: { p_token: string }; Returns: string };
+      join_draft: {
+        Args: { p_token: string };
+        Returns: { code: JoinDraftCode; draft_id: string | null };
+      };
       remove_captain_b: { Args: { p_draft_id: string }; Returns: undefined };
       start_draft: {
         Args: { p_draft_id: string; p_turn_seconds?: number };
