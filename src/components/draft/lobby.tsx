@@ -4,9 +4,11 @@ import { UserCheck, UserPlus } from "lucide-react";
 import { canStart } from "@/core/draft/rules";
 import type { DraftState } from "@/core/draft/types";
 import { DRAFTABLE_PLAYERS } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { CaptainTag } from "./captain-tag";
+import { CAPTAIN_COLORS } from "./captain-colors";
 import { InviteButton } from "./invite-button";
 import { PlayerPoolEditor } from "./player-pool-editor";
 import { RemoveCaptainButton } from "./remove-captain-button";
@@ -41,7 +43,7 @@ export function Lobby({
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex items-center gap-2 rounded-lg border border-border/60 bg-card px-3 py-2">
-            <UserCheck className="size-4 text-primary" />
+            <UserCheck className={cn("size-4", CAPTAIN_COLORS.A.text)} />
             <CaptainTag
               captain={draft.captainA ? captains[draft.captainA] : null}
               slot="A"
@@ -49,7 +51,7 @@ export function Lobby({
           </div>
           <div className="flex items-center gap-2 rounded-lg border border-border/60 bg-card px-3 py-2">
             {hasSecond ? (
-              <UserCheck className="size-4 text-primary" />
+              <UserCheck className={cn("size-4", CAPTAIN_COLORS.B.text)} />
             ) : (
               <UserPlus className="size-4 text-muted-foreground" />
             )}
