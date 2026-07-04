@@ -34,6 +34,9 @@ yarn-error.log*
 .env*
 !.env.example
 
+# local-only service/credential reference (never commit)
+SERVICES.local.md
+
 # vercel
 .vercel
 
