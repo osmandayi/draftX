@@ -4,6 +4,7 @@ import { Star, Zap } from "lucide-react";
 import type { DraftState } from "@/core/draft/types";
 import { cn } from "@/lib/utils";
 import { CaptainTag } from "./captain-tag";
+import { CAPTAIN_COLORS } from "./captain-colors";
 import type { CaptainMap } from "./types";
 
 const SLOTS_PER_TEAM = 6; // drafted players besides the captain
@@ -20,6 +21,7 @@ export function TeamPanel({
   onClock: boolean;
 }) {
   const captainId = slot === "A" ? draft.captainA : draft.captainB;
+  const color = CAPTAIN_COLORS[slot];
   const roster = draft.players
     .filter((p) => p.draftedBy && p.draftedBy === captainId)
     .sort((a, b) => (a.pickNumber ?? 0) - (b.pickNumber ?? 0));
@@ -28,7 +30,9 @@ export function TeamPanel({
     <div
       className={cn(
         "rounded-xl border bg-card p-3 transition-colors",
-        onClock ? "border-primary ring-1 ring-primary/40" : "border-border/60",
+        onClock
+          ? cn(color.border, "ring-1", color.panelRing)
+          : "border-border/60",
       )}
     >
       <div className="flex items-center justify-between">
@@ -37,7 +41,12 @@ export function TeamPanel({
           slot={slot}
         />
         {onClock ? (
-          <span className="flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-[11px] font-medium text-primary">
+          <span
+            className={cn(
+              "flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium",
+              color.badge,
+            )}
+          >
             <Zap className="size-3" />
             On the clock
           </span>
@@ -46,7 +55,7 @@ export function TeamPanel({
 
       <ul className="mt-3 space-y-1.5">
         <li className="flex items-center gap-2 rounded-md bg-muted/50 px-2.5 py-1.5 text-sm">
-          <Star className="size-3.5 text-primary" />
+          <Star className={cn("size-3.5", color.text)} />
           <span className="font-medium">
             {captainId ? captains[captainId]?.name : "Captain"}
           </span>

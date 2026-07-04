@@ -5,6 +5,8 @@ import { resolveTimeout } from "@/server/actions/picks";
 import { slotForCaptainId } from "@/core/draft/rules";
 import { TOTAL_PICKS } from "@/core/draft/schedule";
 import type { DraftState } from "@/core/draft/types";
+import { cn } from "@/lib/utils";
+import { CAPTAIN_COLORS } from "./captain-colors";
 import { PickPool } from "./pick-pool";
 import { TeamPanel } from "./team-panel";
 import { TurnTimer } from "./turn-timer";
@@ -28,6 +30,7 @@ export function DraftBoard({
     ? (captains[currentCaptainId]?.name ?? "Captain")
     : "Captain";
   const pickNumber = Math.min(draft.turnIndex + 1, TOTAL_PICKS);
+  const onClockColor = onClockSlot ? CAPTAIN_COLORS[onClockSlot] : null;
 
   // Both clients fire on expiry; resolve_timeout is an idempotent no-op if the
   // turn was already advanced, so this also covers a disconnected captain.
@@ -49,16 +52,22 @@ export function DraftBoard({
           </p>
           <p className="truncate text-lg font-semibold">
             {isMyTurn ? (
-              <span className="text-primary">Your pick</span>
+              <span className={cn(onClockColor?.text)}>Your pick</span>
             ) : (
               <>
-                {onClockName}
+                <span className={cn(onClockColor?.text)}>{onClockName}</span>
                 <span className="text-muted-foreground"> is picking…</span>
               </>
             )}
           </p>
           {onClockSlot ? (
-            <p className="text-xs text-muted-foreground">
+            <p className="flex items-center gap-1 text-xs text-muted-foreground">
+              <span
+                className={cn(
+                  "size-1.5 rounded-full",
+                  onClockColor?.dot,
+                )}
+              />
               Captain {onClockSlot} on the clock
             </p>
           ) : null}
