@@ -83,10 +83,21 @@ export function useDraftRealtime(initial: DraftState): DraftState {
           const row = payload.new as PlayerRow;
           setState((prev) => applyPlayerRow(prev, row));
         },
-      )
-      .subscribe();
+      );
+
+    // Realtime enforces RLS using the subscriber's JWT. Set it from the current
+    // session BEFORE subscribing — otherwise the socket connects as `anon` and
+    // our member-only policies silently drop every change (turn never advances
+    // on the other client).
+    let active = true;
+    supabase.auth.getSession().then(({ data }) => {
+      if (!active) return;
+      supabase.realtime.setAuth(data.session?.access_token ?? null);
+      channel.subscribe();
+    });
 
     return () => {
+      active = false;
       supabase.removeChannel(channel);
     };
   }, [initial.id]);
