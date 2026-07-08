@@ -27,6 +27,9 @@ export async function AppHeader() {
           <Button variant="ghost" size="sm" render={<Link href="/history" />}>
             History
           </Button>
+          <Button variant="ghost" size="sm" render={<Link href="/players" />}>
+            Oyuncularım
+          </Button>
           <UserMenu
             displayName={profile?.display_name ?? ""}
             avatarUrl={profile?.avatar_url ?? null}
