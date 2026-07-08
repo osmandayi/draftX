@@ -92,7 +92,7 @@ describe("filterSuggestions", () => {
   it("returns [] for an empty query", () => {
     expect(filterSuggestions("   ", saved, [])).toEqual([]);
   });
-  it("matches substrings case-insensitively", () => {
+  it("matches by prefix, case-insensitively", () => {
     expect(filterSuggestions("me", saved, []).map((s) => s.id)).toEqual(["2"]);
   });
   it("excludes names already in the pool", () => {
@@ -132,8 +132,9 @@ export function isNameInList(name: string, list: { name: string }[]): boolean {
 }
 
 /**
- * Saved names matching `query` for the autocomplete, excluding names already
- * in the pool. Empty query returns [] (the browse panel handles "show all").
+ * Saved names whose normalized form starts with `query`, for the autocomplete,
+ * excluding names already in the pool. Prefix match keeps the suggestion list
+ * tight. Empty query returns [] (the browse panel handles "show all").
  */
 export function filterSuggestions(
   query: string,
@@ -145,7 +146,7 @@ export function filterSuggestions(
   const pool = new Set(poolNames.map(normalizeName));
   return saved.filter(
     (entry) =>
-      normalizeName(entry.name).includes(q) &&
+      normalizeName(entry.name).startsWith(q) &&
       !pool.has(normalizeName(entry.name)),
   );
 }
