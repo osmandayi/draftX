@@ -349,8 +349,14 @@ git commit -m "Add saved_players table, RPCs, and add_player auto-save (0008)"
           name?: string;
           created_at?: string;
         };
+        Relationships: [];
       };
 ```
+
+> **Önemli:** `Relationships: [];` satırını atlamayın. Her tablo tipi bu alanı
+> içermeli (mevcut `profiles`/`drafts` blokları gibi); yoksa `saved_players`
+> Supabase `GenericTable` kısıtını ihlal eder, `Database` generic'i bozulur ve
+> **tüm** `from().select()` çağrıları `never` döner (53 dosyada tsc hatası).
 
 - [ ] **Step 1b: Register the new RPCs in the strict Functions map**
 
