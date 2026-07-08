@@ -2,6 +2,7 @@
 
 import { UserCheck, UserPlus } from "lucide-react";
 import { canStart } from "@/core/draft/rules";
+import type { SavedPlayer } from "@/core/roster/match";
 import type { DraftState } from "@/core/draft/types";
 import { DRAFTABLE_PLAYERS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
@@ -20,11 +21,13 @@ export function Lobby({
   isCreator,
   inviteToken,
   captains,
+  savedPlayers,
 }: {
   draft: DraftState;
   isCreator: boolean;
   inviteToken: string;
   captains: CaptainMap;
+  savedPlayers: SavedPlayer[];
 }) {
   const ready = canStart(draft);
   const hasSecond = !!draft.captainB;
@@ -81,7 +84,11 @@ export function Lobby({
 
       <Card>
         <CardContent className="pt-6">
-          <PlayerPoolEditor draftId={draft.id} players={draft.players} />
+          <PlayerPoolEditor
+            draftId={draft.id}
+            players={draft.players}
+            savedPlayers={savedPlayers}
+          />
         </CardContent>
       </Card>
 

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 import { useDraftRealtime } from "@/hooks/use-draft-realtime";
 import { createSupabaseBrowserClient } from "@/server/supabase/browser";
+import type { SavedPlayer } from "@/core/roster/match";
 import type { DraftState } from "@/core/draft/types";
 import { DraftStatusBadge } from "@/components/draft-status-badge";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,7 @@ export function DraftRoom({
   isCreator,
   inviteToken,
   initialCaptains,
+  initialSavedPlayers,
 }: {
   name: string;
   initialDraft: DraftState;
@@ -33,6 +35,7 @@ export function DraftRoom({
   isCreator: boolean;
   inviteToken: string;
   initialCaptains: CaptainMap;
+  initialSavedPlayers: SavedPlayer[];
 }) {
   const draft = useDraftRealtime(initialDraft);
   const [captains, setCaptains] = useState<CaptainMap>(initialCaptains);
@@ -77,6 +80,7 @@ export function DraftRoom({
           isCreator={isCreator}
           inviteToken={inviteToken}
           captains={captains}
+          savedPlayers={initialSavedPlayers}
         />
       ) : draft.status === "active" ? (
         <DraftBoard
