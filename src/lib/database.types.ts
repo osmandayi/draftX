@@ -38,6 +38,27 @@ export interface Database {
         };
         Relationships: [];
       };
+      saved_players: {
+        Row: {
+          id: string;
+          user_id: string;
+          name: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          name: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          name?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       drafts: {
         Row: {
           id: string;
@@ -106,7 +127,9 @@ export interface Database {
         Args: { p_draft_id: string; p_name: string };
         Returns: Database["public"]["Tables"]["players"]["Row"];
       };
+      add_saved_player: { Args: { p_name: string }; Returns: undefined };
       remove_player: { Args: { p_player_id: string }; Returns: undefined };
+      remove_saved_player: { Args: { p_id: string }; Returns: undefined };
       join_draft: {
         Args: { p_token: string };
         Returns: { code: JoinDraftCode; draft_id: string | null };
