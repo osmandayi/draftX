@@ -9,6 +9,7 @@ import {
   toDraftState,
 } from "@/server/repositories/drafts";
 import { getProfilesByIds } from "@/server/repositories/profiles";
+import { listSavedPlayers } from "@/server/repositories/saved-players";
 
 export const metadata: Metadata = { title: "Draft room" };
 
@@ -26,6 +27,7 @@ export default async function DraftRoomPage({
 
   const { draft, players } = result;
   const state = toDraftState(draft, players);
+  const savedPlayers = await listSavedPlayers();
 
   const profiles = await getProfilesByIds([
     draft.captain_a ?? "",
@@ -49,6 +51,7 @@ export default async function DraftRoomPage({
           isCreator={draft.creator_id === user.id}
           inviteToken={draft.invite_token}
           initialCaptains={captains}
+          initialSavedPlayers={savedPlayers}
         />
       </main>
     </>
